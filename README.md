@@ -1,0 +1,2 @@
+# paradigmas
+Studying paradigmas
