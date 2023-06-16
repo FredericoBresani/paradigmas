@@ -128,11 +128,97 @@ bookAuthors (Book id title authors) = authors
 -- Run with: bookId (Book 3 "Probability Theory" ["E.T.H. Jaynes"])
 
 
+addPair:: (Int, Int) -> Int
+addPair (0, y) = y
+addPair (x, y) = x + y
+
+addPair2:: (Int, Int) -> Int
+addPair2 p = fst p + snd p -- Seleciona o primeiro e segundo valores da tupla (fst e snd) 
+
+shift:: ((Int, Int), Int) -> (Int, (Int, Int))
+shift ((x, y), z) = (x, (y, z))
 
 
 
 
+fibStep :: (Integer, Integer) -> (Integer, Integer)
+fibStep (u, v) = (v, u + v)
 
+fibPair:: Integer -> (Integer, Integer)
+fibPair n
+    | n == 0 = (0, 1)
+    | otherwise = fibStep(fibPair(n - 1))
+
+fastFib:: Integer -> Integer
+fastFib n = fst (fibPair n)
+
+delta:: (Float, Float, Float) -> Float
+delta (a, b, c) = b^2 - 4*a*c
+
+roots:: (Float, Float, Float) -> String
+roots (a, b, c)
+    | delta (a, b, c) > 0 = show((-b + sqrt(delta (a, b, c)))/(2*a))++" "++show((-b - sqrt(delta (a, b, c)))/(2*a))
+    | delta (a, b, c) == 0 = show(-b/(2*a))
+    | otherwise = "Nenhuma raiz"
+
+
+ehPar:: Int -> Bool
+ehPar n
+    | mod n 2 == 0 = True
+    | otherwise = False
+
+--Maneiras de expressar listas
+listasF:: Int -> [Float]
+listasF 0 = [2.8..5.0]
+listasF 1 = [2.8, 3.3..5]
+
+listasS:: Int -> [Char]
+listasS 0 = ['H', 'e', 'y']
+listasS 1 = "Hey";
+
+listasB:: Int -> [Bool]
+listasB 0 = [ehPar n | n <- [1, 2, 3, 4, 5]]
+
+listasI:: Int -> [Int]
+listasI 0 = [2..7]
+listasI 1 = [7, 5..0]
+listasI 2 = [2..2]
+listasI 3 = [2,7..4]
+listasI 4 = [2 * n | n <- [2, 4, 7]]
+listasI 5 = [2 * n | n <- [1, 2, 3, 4], ehPar n]
+listasI 6 = [a + b | (a, b) <- [(1, 2), (2, 3), (3, 4), (4, 4)]]
+listasI 7 = [a + b | (a, b) <- [(1, 2), (2, 3), (3, 4), (4, 4)], a == b]
+listasI 8 = 1:[] --adiciona 1 ao inicio na lista
+listasI 9 = [1, 2, 3, 4] ++ [7, 8]
+listasI 10 = concat [[1, 2, 3], [6, 7, 8], [9]]
+listasI 11 = 5:4:3:2:1:[]
+-- [2,9,8..1] Erro de compilação em .., aparentemente não podemos usar mais de 2 argumentos nessas chamadas
+
+todosPares xs = (xs == [x | x <- xs, ehPar x])
+itemFromList n xs = xs!!n
+splitIn n xs = splitAt n xs
+-- Outras funções sobre listas: head, tail, take, drop, init, reverse, replicate
+
+head2 :: [a] -> a
+head2 (x:_) = x -- O : é o construtor da lista e x sempre é o primeiro elemento
+
+tail2 :: [a] -> [a]
+tail2 (_:xs) = xs
+
+emptyList :: [a] -> Bool
+emptyList [] = True
+emptyList (_:_) = False
+
+maiorDaLista :: [Int] -> Int
+maiorDaLista [] = minBound :: Int
+maiorDaLista [x] = x
+maiorDaLista (x:xs)
+    | x > maiorDaLista xs = x
+    | otherwise = maiorDaLista xs
+
+
+replicate1 0 ch = [ ]
+replicate1 n ch = ch : replicate1 (n - 1) ch
 
 
 
