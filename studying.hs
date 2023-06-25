@@ -216,9 +216,28 @@ maiorDaLista (x:xs)
     | x > maiorDaLista xs = x
     | otherwise = maiorDaLista xs
 
+maiorDaLista2 :: [Int] -> Int
+maiorDaLista2 (x:xs)
+    | [] == [y | y <- xs, x < y] = x
+    | otherwise = maiorDaLista2 xs
+
 
 replicate1 0 ch = [ ]
 replicate1 n ch = ch : replicate1 (n - 1) ch
 
+zip1 :: [a] -> [b] -> [(a, b)]
+zip1 (x:xs) (y:ys) = (x, y) : zip1 xs ys
+zip1 _ _ = []
+
+
+qsort :: [Integer] -> [Integer]
+qsort [] = []
+qsort (x:xs) = menorOuIgualX ++ [x] ++ maiorX
+    where 
+        menorOuIgualX = qsort [y | y <- xs, y <= x]
+        maiorX = qsort [y | y <- xs, y > x]
+
+
+printBreakLine = putStr("Alo" ++ "\n" ++ "Alo" ++ "\n")
 
 
