@@ -241,3 +241,55 @@ qsort (x:xs) = menorOuIgualX ++ [x] ++ maiorX
 printBreakLine = putStr("Alo" ++ "\n" ++ "Alo" ++ "\n")
 
 
+ehDigito :: Char -> Bool
+ehDigito a
+        | fromEnum a >= 48 && fromEnum a <= 57 = True
+        | otherwise = False
+
+altaOrdem :: (f -> s) -> [f] -> [s]
+altaOrdem function [] = []
+altaOrdem function (b:bs) = (function b) : altaOrdem function bs
+
+compreLista :: (f -> s) -> [f] -> [s]
+compreLista function [] = []
+compreLista function (x:xs) = [function a | a <- x:xs]
+
+filtro :: (f -> Bool) -> [f] -> [f]
+filtro function [] = []
+filtro function (x:xs) = [y | y <- x:xs, function y]
+
+
+folding :: (t -> t -> t) -> [t] -> t
+folding function [a] = a
+folding function (x:xs) = function x (folding function xs)
+
+composing :: Int -> Int
+composing n = n + 1
+
+{-
+We could call (composing.composing) 2 - resultando em 4
+or (.) composing composing 2 - também resultando em 4
+-}
+
+iter :: Int -> (t -> t) -> (t -> t)
+iter 0 function = id
+iter n function = (iter (n - 1) function).function
+
+{- Call iter 2 composing 2-}
+
+
+iSort :: [Int] -> [Int]
+iSort [] = []
+iSort [a] = [a]
+iSort (x:xs) = ins x (iSort xs)
+
+ins :: Int -> [Int] -> [Int]
+ins x [] = [x]
+ins x (y:ys)
+    | x <= y = x:(y:ys)
+    | otherwise = y:ins x ys
+
+head1 :: [a] -> a
+head1 l = case l of
+            [] -> error "lista vazia"
+            (x:_) -> x
