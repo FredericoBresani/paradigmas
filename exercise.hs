@@ -71,5 +71,44 @@ maius a
 paraMaiuscula :: String -> String
 paraMaiuscula s = [maius a | a <- s]
 
+divisores :: Integer -> [Integer]
+divisores n 
+    | n <= 0 = []
+    | otherwise = [a | a <- [1..n], mod n a == 0] 
+
+isPrime :: Integer -> Bool
+isPrime n
+    | length (d n) /= 2 = False
+    | otherwise = (d n)!!0 == 1 && (d n)!!1 == n
+    where
+        d x = divisores x 
+
+menorLista :: [Int] -> Int
+menorLista [a] = a
+menorLista (x:xs)
+    | x < menorLista xs = x
+    | otherwise = menorLista xs
+
+fib :: Int -> Int
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n - 1) + fib (n - 2)
+
+
+
+fibTable :: Int -> String
+fibTable 0 = "n fib n\n0 0"
+fibTable n = fibTable (n - 1) ++ "\n" ++ show(n) ++ " " ++ show (fib n)
+
+measure :: [a] -> Int
+measure [] = -1
+measure [x] = 1
+measure (x:xs) = 1 + measure xs
+
+takeFinal :: [a] -> [a]
+takeFinal [] = []
+takeFinal [a] = []
+takefinal (a:as) = as
+
 
 
