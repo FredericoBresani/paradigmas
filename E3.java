@@ -7,7 +7,7 @@ public class E3 {
 
         public SecureQueue() {}
 
-        synchronized public void insert(int i) {
+        public void insert(int i) {
             fila.add(i);
         }
 
