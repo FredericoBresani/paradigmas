@@ -5,37 +5,42 @@ import java.util.concurrent.locks.Lock;
 
 public class ProdutorConsumidorLock {
     static class Buffer {
-        LinkedList<Integer> buffer = new LinkedList<Integer>();
-
-        private boolean disponibilidade = false;
-        private Lock lock = new ReentrantLock();
-        private Condition condicional = lock.newCondition();
-
-
+        public LinkedList<Integer> buffer = new LinkedList<Integer>();
+        private Lock aLock = new ReentrantLock();
+        private Condition condicional = aLock.newCondition();
+        private boolean c = false;
         public Buffer() {}
 
-        public int consume(String id) {
-            lock.lock();
+        public void consume(String id) {
+            aLock.lock();
             try {
                 while (this.buffer.size() == 0) {
                     try {
-                        condicional.wait();
-                    } catch (InterruptedException e) { }
+                        condicional.await(); // O consumidor dorme e libera o lock
+                    } catch (InterruptedException e) {}
                 }
-                disponibilidade = false;
                 System.out.println("Consumidor "+id+" consumiu: "+this.buffer.getFirst());
                 this.buffer.removeFirst();
-                this.condicional.signalAll();
+                condicional.signalAll(); // O consumidor acorda o produtor
             } finally {
-                lock.unlock();
-                int q = this.buffer.getFirst();
-                this.buffer.removeFirst();
-                return q;
+                aLock.unlock(); // O condumidor libera o lock, agora o produtor pode pegar o lock
             }
         }
 
         public void produce(String id, int v) {
-            
+            aLock.lock();
+            try {
+                while (this.buffer.size() > 0) {
+                    try {
+                        condicional.await(); // O produtor dorme e libera o lock
+                    } catch (InterruptedException e) {}
+                } 
+                this.buffer.push(v);
+                System.out.println("Produtor "+id+" produziu: "+this.buffer.getFirst());
+                condicional.signalAll(); // O produtor acorda o consumidor
+            } finally {
+                aLock.unlock(); // O produtor libera o lock, agora o consumidor pode pegar o lock
+            }
         }
     }
 
@@ -79,7 +84,8 @@ public class ProdutorConsumidorLock {
         }
         Thread produtor = new Produtor("0", values, buf);
         Thread consumidor = new Consumidor("1", buf);
-        produtor.start();
         consumidor.start();
+        produtor.start();
+        
     }
 }
