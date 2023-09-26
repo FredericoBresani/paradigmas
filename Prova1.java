@@ -7,14 +7,14 @@ public class Prova1 {
     static class Pista {
         int id;
         private boolean ocupada;
-        private Lock aLock = new ReentrantLock();
+        private Lock aLock = new ReentrantLock(true); //fair lock, na tentativa de dar preferência aos aviões de saida mais cedo
         private Condition condicional = aLock.newCondition();
         public Pista(int id) {
             this.ocupada = false;
             this.id = id;
         }
 
-        public void utilizar(int id, int c, int s) {
+        public void utilizar(int id, long c, long s) {
             aLock.lock();
             try {
                 while (this.ocupada) {
@@ -47,10 +47,11 @@ public class Prova1 {
     }
 
     static class Aviao extends Thread {
-        int horaChega, horaSai, id;
+        int id;
+        long horaChega, horaSai;
         boolean terminado = false;
         Pista [] pistas;
-        public Aviao(int c, int s, int id, Pista [] p) {
+        public Aviao(long c, long s, int id, Pista [] p) {
             this.horaChega = c;
             this.horaSai = s;
             this.pistas = p;
@@ -68,14 +69,6 @@ public class Prova1 {
                 }
             }
         }
-
-        /*
-        public void timer() {
-            if (horaChega <= System.currentTimeMillis()) {
-                this.aterrisar();
-            }
-        }
-        */
     }
 
     public static void main(String[] args) {
@@ -94,19 +87,12 @@ public class Prova1 {
         }
         int i = 0;
         for (; i < N; i++) { // Aviões de saída
-            avioesSaida[i] = new Aviao((i+1)*500, -1, i, pistas);
+            avioesSaida[i] = new Aviao(-1, System.currentTimeMillis(), i, pistas);
+            avioesSaida[i].start();
         }
         for (int t = 0; i < N + M; i++, t++) { // Aviões de chegada
-            avioesChegada[t] = new Aviao(-1, (t+1)*500, i, pistas);
-        }
-
-        
-
-        for (int j = 0; j < N; j++) { // Aviões de saída
-            avioesSaida[j].start();
-        }
-        for (int j = 0; j < M; j++) { // Aviões de chegada
-            avioesChegada[j].start();
+            avioesChegada[t] = new Aviao(System.currentTimeMillis(), -1, i, pistas);
+            avioesChegada[t].start();
         }
     }
 }
